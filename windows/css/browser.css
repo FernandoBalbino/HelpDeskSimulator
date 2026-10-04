@@ -1,0 +1,125 @@
+.sim-browser-window:not(.is-maximized) { width: min(1200px, 90vw); height: min(760px, 86vh); min-width: 0; }
+.sim-browser-window .window-titlebar { height: 42px; flex-basis: 42px; justify-content: flex-start; background: #dfe3ea; }
+.sim-browser-window .browser-window-identity { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); }
+.sim-browser-window .window-controls { flex: 0 0 auto; margin-left: auto; }
+.sim-browser-window .window-controls button { width: 44px; }
+.sim-browser-window .window-content { position: relative; background: #fff; }
+.browser-tabstrip { display: flex; min-width: 0; max-width: calc(100% - 145px); height: 100%; align-items: end; gap: 4px; overflow: hidden; padding: 5px 0 0 10px; }
+.browser-tab { display: flex; min-width: 76px; max-width: 210px; height: 34px; flex: 1 1 150px; align-items: center; gap: 6px; border-radius: 9px 9px 0 0; padding: 0 7px 0 12px; background: transparent; color: #263546; font: 12px "Segoe UI", sans-serif; }
+.browser-tab.is-active { background: #fff; }
+.browser-tab > img { width: 16px; height: 16px; flex: 0 0 auto; object-fit: contain; }
+.browser-tab button { min-width: 0; border: 0; background: transparent; color: inherit; font: inherit; cursor: pointer; }
+.browser-tab [data-browser-switch] { flex: 1; overflow: hidden; text-align: left; text-overflow: ellipsis; white-space: nowrap; }
+.browser-tab [data-browser-close] { width: 24px; height: 24px; flex: 0 0 auto; border-radius: 5px; font-size: 18px; line-height: 1; }
+.browser-tab [data-browser-close]:hover, .browser-new-tab:hover { background: rgba(42, 58, 74, .12); }
+.browser-new-tab { width: 28px; height: 28px; flex: 0 0 auto; align-self: center; border: 0; border-radius: 50%; background: transparent; color: #304254; font-size: 23px; line-height: 1; cursor: pointer; }
+.sim-browser-window .vpn-browser-toolbar { height: 46px; flex-basis: 46px; gap: 5px; border: 0; border-bottom: 1px solid #e3e6eb; padding: 5px 12px; background: #fff; }
+.sim-browser-window .vpn-browser-toolbar > button { width: 34px; height: 34px; flex: 0 0 34px; border-radius: 50%; color: #354456; font-size: 20px; cursor: pointer; }
+.sim-browser-window .vpn-browser-toolbar > button:disabled { opacity: .32; cursor: default; }
+.sim-browser-window .vpn-browser-toolbar form { height: 34px; margin: 0 5px; border: 0; border-radius: 18px; background: #f0f3f7; }
+.sim-browser-window .vpn-browser-toolbar form input { min-height: 32px; color: #273548; font: 13px "Segoe UI", sans-serif; }
+.sim-browser-window .vpn-browser-toolbar form button { min-height: 32px; color: #485668; cursor: pointer; }
+.sim-browser-window .vpn-browser-toolbar .browser-lock { width: 16px; height: 16px; margin-left: 12px; border-radius: 0; background: transparent; color: #506174; font-size: 16px; font-weight: 400; }
+.sim-browser-window .vpn-browser-toolbar .browser-favorite { color: #263950; font-size: 25px; }
+.sim-browser-window .vpn-browser-toolbar .browser-favorite.is-saved { color: #e3a518; }
+.sim-browser-window .vpn-browser-toolbar [data-browser-history], .sim-browser-window .vpn-browser-toolbar .browser-download-button:not(.has-downloads):not(.is-hint-target) { display: none; }
+.sim-browser-window .vpn-browser-toolbar .brave-shield { color: #fb542b; font-size: 22px; }
+.sim-browser-window .vpn-browser-toolbar .brave-shield img { width: 19px; height: 19px; filter: invert(43%) sepia(94%) saturate(2565%) hue-rotate(343deg) brightness(102%) contrast(100%); }
+.sim-browser-window[data-browser-hint="address"] [data-browser-address-form], .sim-browser-window[data-browser-hint="menu"] [data-browser-menu], .sim-browser-window[data-browser-hint="new-tab"] [data-browser-new-tab], .sim-browser-window[data-browser-hint="search"] .google-modern-search { outline: 3px solid #f3b23a; outline-offset: 2px; box-shadow: 0 0 0 7px #f8cf7455; }
+.sim-browser-window button:focus-visible, .sim-browser-window input:focus-visible, .browser-museum-page button:focus-visible, .browser-trail-page button:focus-visible { outline: 3px solid #0f6cbd; outline-offset: 2px; }
+.sim-browser-window .vpn-browser-shell { position: relative; height: 100%; }
+.sim-browser-window .google-home-page { min-height: 100%; }
+.sim-browser-window[data-browser="edge"] .window-titlebar { background: #e8eef7; }
+.sim-browser-window[data-browser="edge"] .browser-tab { border-radius: 12px 12px 0 0; }
+.sim-browser-window[data-browser="edge"] .vpn-browser-toolbar { background: #f9fbfe; }
+.sim-browser-window[data-browser="firefox"] .window-titlebar { background: #f1f0f4; }
+.sim-browser-window[data-browser="firefox"] .browser-tab { height: 31px; margin-bottom: 3px; border-radius: 7px; }
+.sim-browser-window[data-browser="firefox"] .browser-tab.is-active { box-shadow: 0 2px 8px #c7c8d3; }
+.sim-browser-window[data-browser="firefox"] .vpn-browser-toolbar form { background: #f6f6f9; box-shadow: inset 0 0 0 1px #dddde5; }
+.sim-browser-window[data-browser="brave"] .window-titlebar { background: #e9e9f0; }
+.sim-browser-window[data-browser="brave"] .vpn-browser-toolbar form { background: #f3f3f8; }
+.sim-browser-window[data-browser="opera"] .window-titlebar { background: #e6e4ed; }
+.sim-browser-window[data-browser="opera"] .browser-tab { border-radius: 12px 12px 0 0; }
+.sim-browser-window[data-browser="opera"] .vpn-browser-toolbar form { background: #f4f3f8; }
+.opera-menu-mark { display: grid; width: 29px; height: 29px; align-self: center; place-items: center; }
+.opera-menu-mark img { width: 23px; height: 23px; object-fit: contain; }
+.browser-newtab-page { min-height: 100%; font: 14px "Segoe UI", sans-serif; }
+.browser-newtab-page main { width: min(680px, 90%); margin: auto; padding: 80px 0; text-align: center; }
+.browser-newtab-page h1 { margin: 0 0 26px; font-size: 34px; }
+.browser-newtab-page form { display: flex; align-items: center; width: 100%; min-height: 52px; border-radius: 26px; padding: 5px 10px 5px 20px; background: #fff; box-shadow: 0 4px 20px rgba(20, 35, 58, .15); }
+.browser-newtab-page form input { min-width: 0; flex: 1; border: 0; outline: none; background: transparent; font: 15px "Segoe UI", sans-serif; }
+.browser-newtab-page form button { min-height: 36px; border: 0; border-radius: 19px; padding: 0 13px; background: #eef2f7; color: #25364b; cursor: pointer; }
+.browser-quick-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; margin: 28px auto; }
+.browser-quick-links button { display: grid; width: 104px; height: 82px; place-items: center; border: 1px solid #dbe2ed; border-radius: 12px; background: rgba(255,255,255,.85); color: #29415f; font: 600 13px "Segoe UI", sans-serif; cursor: pointer; }
+.browser-quick-links button:hover { transform: translateY(-2px); box-shadow: 0 5px 15px #adbccc66; }
+.browser-newtab-page.is-edge { background: linear-gradient(145deg,#d8eaf7 0%,#8caacf 45%,#e9f3f8 100%); }
+.browser-newtab-page.is-edge > header { display: flex; justify-content: space-between; padding: 20px 30px; color: #17365a; font-weight: 700; }
+.browser-newtab-page.is-edge h1 { color: #163d69; font-weight: 600; }
+.browser-newtab-page.is-firefox { background: #f9f9fb; }
+.browser-newtab-page.is-firefox h1 { display: flex; align-items: center; justify-content: center; gap: 14px; color: #221f33; font-size: 35px; }
+.browser-newtab-page.is-firefox h1 img { width: 58px; height: 58px; }
+.browser-newtab-page.is-firefox h2 { margin: 55px 0 0; text-align: left; font-size: 16px; }
+.browser-newtab-page.is-brave { background: radial-gradient(circle at 80% 15%,#d9d0ed,transparent 35%),linear-gradient(160deg,#f9f8fc,#e9e5f1); }
+.browser-newtab-page.is-brave > header { display: flex; gap: 25px; padding: 24px; color: #4d4260; font-size: 12px; font-weight: 700; }
+.browser-newtab-page.is-brave > header strong { font-size: 22px; }
+.browser-newtab-page.is-brave h1.brave-clock { color: #453c52; font-size: 72px; font-weight: 400; }
+.browser-newtab-page.is-opera { display: flex; background: #f8f7fa; }
+.browser-newtab-page.is-opera aside { display: flex; width: 58px; flex: 0 0 58px; flex-direction: column; align-items: center; gap: 28px; padding: 20px 0; border-right: 1px solid #e1dfe8; background: #f1eff5; color: #5b556b; font-size: 22px; }
+.browser-newtab-page.is-opera aside img { width: 28px; height: 28px; object-fit: contain; }
+.browser-newtab-page.is-opera main { width: min(650px, calc(90% - 58px)); }
+.browser-newtab-page.is-opera h1 { text-align: left; font-size: 28px; }
+.browser-popover { position: absolute; z-index: 5; top: 8px; right: 14px; width: min(370px,calc(100% - 28px)); max-height: calc(100% - 16px); overflow: auto; border: 1px solid #d7e0e9; border-radius: 12px; padding: 12px; background: #fff; color: #21344a; box-shadow: 0 18px 42px #17273e45; font: 13px "Segoe UI",sans-serif; }
+.browser-popover header { display: flex; align-items: center; justify-content: space-between; }
+.browser-popover h2 { margin: 0 0 10px; font-size: 18px; }
+.browser-popover h3 { margin: 12px 0 6px; font-size: 13px; }
+.browser-popover button { display: block; width: 100%; min-height: 38px; border: 0; border-radius: 6px; padding: 6px 9px; background: transparent; color: inherit; text-align: left; cursor: pointer; }
+.browser-popover button:hover { background: #edf4fb; }
+.browser-popover header button { width: 30px; text-align: center; font-size: 20px; }
+.browser-menu { width: 280px; }
+.browser-menu kbd { float: right; color: #728095; font: inherit; }
+.browser-history button:not(header button) { display: grid; grid-template-columns: 50px 1fr; gap: 2px 8px; }
+.browser-history button small { grid-column: 2; color: #64748b; }
+.browser-history button span { color: #64748b; }
+.browser-bookmark label { display: block; margin: 8px 0; font-weight: 600; }
+.browser-bookmark input,.browser-bookmark select { display: block; width: 100%; height: 34px; margin-top: 4px; border: 1px solid #aebed0; border-radius: 6px; padding: 0 8px; background: #fff; }
+.browser-bookmark footer { display: flex; justify-content: flex-end; gap: 8px; }
+.browser-bookmark footer button { width: auto; padding: 0 15px; }
+.browser-bookmark footer button[type="submit"] { background: #0f6cbd; color: #fff; }
+.browser-museum-info { position: absolute; z-index: 3; right: 18px; bottom: 18px; left: 18px; display: flex; align-items: center; gap: 12px; border: 1px solid #d7e4ef; border-radius: 12px; padding: 10px 14px; background: #fffffff2; color: #1e344f; box-shadow: 0 7px 25px #253c5b3b; font: 12px "Segoe UI",sans-serif; }
+.browser-museum-info img { width: 32px; height: 32px; object-fit: contain; }
+.browser-museum-info span { min-width: 0; flex: 1; }
+.browser-museum-info strong,.browser-museum-info small { display: block; }
+.browser-museum-info button { min-height: 36px; border: 0; border-radius: 8px; padding: 0 13px; background: #0f6cbd; color: #fff; cursor: pointer; }
+.browser-study-page { min-height: 100%; background: #fff; color: #24384f; font: 15px "Segoe UI",sans-serif; }
+.browser-study-page > header { display: flex; align-items: center; gap: 12px; border-bottom: 1px solid #e4e8ed; padding: 15px 28px; }
+.browser-study-page > header small { display: block; color: #718095; }
+.browser-study-page main { max-width: 940px; margin: auto; padding: 35px 40px; }
+.browser-study-page h1 { margin: 0 0 16px; font-size: 32px; }
+.browser-study-page p { max-width: 690px; line-height: 1.6; }
+.browser-study-page button { min-height: 40px; border: 1px solid #a9bfda; border-radius: 8px; padding: 0 15px; background: #eef6ff; color: #075da4; cursor: pointer; }
+.browser-study-page.is-wiki > header strong { font: 40px Georgia,serif; }
+.browser-study-page.is-wiki > header span { font: 20px Georgia,serif; }
+.browser-study-page.is-wiki main { font-family: Georgia,serif; }
+.browser-study-page.is-youtube > header strong { color: #e02020; font-size: 22px; }
+.study-parts { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin: 22px 0; }
+.study-parts article { border: 1px solid #d8e4f0; border-radius: 10px; padding: 14px; background: #f5f9fd; }
+.study-parts h2 { margin: 0; font-size: 18px; }
+.study-parts p { margin-bottom: 0; }
+.browser-trail-window .window-content,.browser-museum-window .window-content { overflow: hidden; background: var(--learning-bg); container-type: inline-size; }
+.browser-museum-content { overflow: auto; padding: 26px 32px 70px; }
+.browser-museum-grid { display: grid; max-width: 1180px; grid-template-columns: repeat(5,minmax(0,1fr)); gap: 14px; margin: 0 auto; }
+.browser-museum-card { display: flex; min-height: 320px; flex-direction: column; align-items: center; border: 1px solid #dce6ef; border-radius: 20px; padding: 24px 14px 18px; background: #fff; text-align: center; box-shadow: 0 10px 24px #315d8220; }
+.browser-museum-card > img { width: 76px; height: 76px; object-fit: contain; }
+.browser-museum-card h2 { min-height: 50px; margin: 14px 0 3px; font-size: 17px; line-height: 1.25; }
+.browser-museum-card p { flex: 1; margin: 0 0 14px; color: #607088; font-size: 12px; line-height: 1.4; }
+.browser-museum-card span { margin-bottom: 10px; color: #687891; font-size: 11px; font-weight: 800; }
+.browser-museum-card span.is-visited { color: #147548; }
+.browser-museum-card button { width: 100%; min-height: 40px; border: 0; border-radius: 10px; background: #0f6cbd; color: #fff; font-weight: 800; cursor: pointer; }
+.browser-museum-card button:hover { background: #084f91; }
+.browser-finale { display: flex; max-width: 950px; align-items: center; gap: 16px; margin: 0 auto 20px; border: 1px solid #bce4ce; border-radius: 18px; padding: 14px 22px; background: #e7f8ee; color: #19563a; }
+.browser-finale img { width: 55px; height: 55px; object-fit: contain; }
+.browser-finale h2 { margin: 0 0 2px; font-size: 20px; }
+.browser-finale p { margin: 0; font-size: 12px; }
+@media (max-width: 1050px) { .browser-museum-grid { grid-template-columns: repeat(3,minmax(0,1fr)); } }
+@media (max-width: 720px) { .sim-browser-window:not(.is-maximized) { width: 100vw; height: calc(100vh - 48px); } .browser-tabstrip { max-width: calc(100% - 105px); }.sim-browser-window .window-controls button { width: 34px; }.sim-browser-window .vpn-browser-toolbar { gap: 1px; padding: 4px; }.sim-browser-window .vpn-browser-toolbar > button { width: 29px; flex-basis: 29px; }.sim-browser-window .vpn-browser-toolbar .browser-download-button { display: none; }.browser-museum-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }.browser-museum-content { padding: 15px; }.browser-museum-info { flex-wrap: wrap; }.browser-museum-info button { width: 100%; }.study-parts { grid-template-columns: 1fr; } }
+@media (max-width: 480px) { .browser-museum-grid { grid-template-columns: 1fr; } .browser-museum-card { min-height: 250px; }.browser-newtab-page main { padding-top: 38px; }.browser-newtab-page.is-brave > header { flex-wrap: wrap; gap: 6px; }.browser-study-page main { padding: 22px; } }

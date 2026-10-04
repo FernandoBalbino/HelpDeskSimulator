@@ -1,0 +1,507 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#080808" />
+    <meta
+      name="description"
+      content="OSLab — laboratório virtual de Sistemas Operacionais em português."
+    />
+    <title>OSLab</title>
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="icon" type="image/png" sizes="192x192" href="./assets/icons/pwa-192.png" />
+    <link rel="apple-touch-icon" href="./assets/icons/pwa-192.png" />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="remote.css" />
+    <link rel="stylesheet" href="css/task-manager.css" />
+    <link rel="stylesheet" href="css/missions.css" />
+    <link rel="stylesheet" href="css/exercises.css" />
+    <link rel="stylesheet" href="css/learning.css" />
+    <link rel="stylesheet" href="css/vpn.css" />
+    <link rel="stylesheet" href="css/install-lab.css" />
+    <link rel="stylesheet" href="css/software-apps.css" />
+    <link rel="stylesheet" href="css/browser.css" />
+  </head>
+  <body>
+    <main id="oslab" class="oslab" data-state="login">
+      <section id="login-screen" class="screen login-screen" aria-label="Entrar no OSLab">
+        <div class="login-backdrop" aria-hidden="true"></div>
+        <form id="login-form" class="login-card" autocomplete="off">
+          <img class="login-avatar" src="assets/icons/avatar.webp" alt="Perfil do aluno" />
+          <h1>Aluno</h1>
+          <label class="sr-only" for="password">Senha</label>
+          <div class="password-row">
+            <input
+              id="password"
+              name="password"
+              type="password"
+              placeholder="Senha"
+              aria-describedby="login-message"
+              autofocus
+            />
+            <button type="submit" class="login-submit" aria-label="Entrar">
+              <img src="assets/icons/ui/right.png" alt="" />
+            </button>
+          </div>
+          <p id="login-message" class="login-message" role="status" aria-live="polite">
+            Digite sua senha para entrar.
+          </p>
+          <button id="fullscreen-login-button" class="fullscreen-login-button" type="button">
+            <img src="assets/icons/ui/maximize.png" alt="" />
+            <span>Abrir em tela cheia</span>
+          </button>
+          <button class="fullscreen-login-button pwa-install-button" type="button" data-pwa-install>
+            <img src="assets/icons/context/restore-item.png" alt="" />
+            <span>Instalar para usar offline</span>
+          </button>
+          <div id="welcome-state" class="welcome-state is-hidden" aria-live="polite">
+            <img src="assets/loader.gif" alt="" />
+            <span>Bem-vindo</span>
+          </div>
+        </form>
+
+        <div class="login-system-icons" aria-label="Status do sistema">
+          <img src="assets/icons/ui/wifi.png" alt="Rede conectada" />
+          <img src="assets/icons/ui/audio.png" alt="Som ligado" />
+          <img src="assets/icons/ui/battery.png" alt="Bateria" />
+        </div>
+      </section>
+
+      <section id="desktop" class="screen desktop is-hidden" aria-label="Área de trabalho do OSLab">
+        <div id="desktop-icons" class="desktop-icons" aria-label="Atalhos da área de trabalho">
+          <button class="desktop-shortcut" type="button" data-app="computer">
+            <img src="assets/icons/computer.png" alt="" />
+            <span>Computador</span>
+          </button>
+          <button class="desktop-shortcut" type="button" data-app="recycle">
+            <img src="assets/icons/recycle-bin.png" alt="" />
+            <span>Lixeira</span>
+          </button>
+          <button class="desktop-shortcut" type="button" data-app="explorer">
+            <img src="assets/icons/explorer.png" alt="" />
+            <span>Explorador de Arquivos</span>
+          </button>
+          <button class="desktop-shortcut" type="button" data-app="google">
+            <img src="assets/browser/chrome.svg" alt="" />
+            <span>Google Chrome</span>
+          </button>
+          <button class="desktop-shortcut" type="button" data-app="settings">
+            <img src="assets/icons/settings.png" alt="" />
+            <span>Configurações</span>
+          </button>
+          <button class="desktop-shortcut" type="button" data-app="missions">
+            <img src="assets/learning/icons/target_arrow.svg" alt="" />
+            <span>Missões</span>
+          </button>
+          <button class="desktop-shortcut" type="button" data-app="exercises">
+            <img src="assets/learning/icons/wrench.svg" alt="" />
+            <span>Exercícios</span>
+          </button>
+          <button class="desktop-shortcut" type="button" data-app="vpn">
+            <img src="assets/learning/icons/shield_checkmark.svg" alt="" />
+            <span>VPN</span>
+          </button>
+          <button class="desktop-shortcut" type="button" data-app="vpnlab">
+            <img src="assets/learning/icons/globe_search.svg" alt="" />
+            <span>Laboratório VPN</span>
+          </button>
+          <button class="desktop-shortcut" type="button" data-app="installlab">
+            <img src="assets/programs/install-lab.svg" alt="" />
+            <span>Instalação de Programas</span>
+          </button>
+          <button class="desktop-shortcut" type="button" data-app="browsertrail">
+            <img src="assets/learning/icons/globe_search.svg" alt="" />
+            <span>Navegadores e Internet</span>
+          </button>
+          <button class="desktop-shortcut" type="button" data-app="browsermuseum">
+            <img src="assets/learning/icons/apps.svg" alt="" />
+            <span>Conhecendo os Navegadores</span>
+          </button>
+          <button class="desktop-shortcut" type="button" data-app="controlpanel">
+            <img src="assets/programs/control-panel.png" alt="" />
+            <span>Painel de Controle</span>
+          </button>
+        </div>
+
+        <div id="window-layer" class="window-layer"></div>
+        <template id="window-template">
+          <article class="app-window" role="dialog" aria-modal="false">
+            <header class="window-titlebar" data-window-role="titlebar">
+              <div class="window-identity">
+                <img data-window-role="icon" src="assets/icons/explorer.png" alt="" />
+                <span data-window-role="title">Explorador de Arquivos</span>
+              </div>
+              <label class="settings-title-search is-hidden" data-window-role="settings-search">
+                <img src="assets/icons/search.png" alt="" />
+                <input type="search" placeholder="Localizar uma configuração" aria-label="Localizar uma configuração" />
+              </label>
+              <div class="window-controls" aria-label="Controles da janela">
+                <button type="button" data-window-action="minimize" aria-label="Minimizar">
+                  <img src="assets/icons/ui/minimize.png" alt="" />
+                </button>
+                <button type="button" data-window-action="maximize" aria-label="Maximizar">
+                  <img data-window-role="maximize-icon" src="assets/icons/ui/maximize.png" alt="" />
+                </button>
+                <button type="button" class="close-control" data-window-action="close" aria-label="Fechar">
+                  <img src="assets/icons/ui/close.png" alt="" />
+                </button>
+              </div>
+            </header>
+            <div class="window-toolbar" data-window-role="toolbar">
+              <button type="button" aria-label="Voltar" data-toolbar-action="back">
+                <img src="assets/icons/ui/left.png" alt="" />
+              </button>
+              <button type="button" aria-label="Atualizar" data-toolbar-action="refresh">
+                <img src="assets/icons/ui/refresh.png" alt="" />
+              </button>
+              <div class="window-address" data-window-role="address">Este Computador</div>
+            </div>
+            <div class="window-content" data-window-role="content"></div>
+            <div class="resize-handle" data-window-role="resize" aria-hidden="true"></div>
+          </article>
+        </template>
+
+        <div id="start-menu" class="start-menu flyout is-hidden" aria-label="Menu Iniciar">
+          <label class="start-search">
+            <img src="assets/icons/search.png" alt="" />
+            <input id="start-search-input" type="search" placeholder="Digite aqui para pesquisar" />
+          </label>
+          <div class="start-section-heading">
+            <h2>Fixado</h2>
+            <button id="all-apps-button" type="button">Todos <span aria-hidden="true">›</span></button>
+          </div>
+          <div id="start-apps" class="start-apps">
+            <button type="button" data-app="computer">
+              <img src="assets/icons/computer.png" alt="" />
+              <span>Computador</span>
+            </button>
+            <button type="button" data-app="explorer">
+              <img src="assets/icons/explorer.png" alt="" />
+              <span>Explorador</span>
+            </button>
+            <button type="button" data-app="recycle">
+              <img src="assets/icons/recycle-bin.png" alt="" />
+              <span>Lixeira</span>
+            </button>
+            <button type="button" data-app="google">
+              <img src="assets/browser/chrome.svg" alt="" />
+              <span>Google Chrome</span>
+            </button>
+            <button type="button" data-app="settings">
+              <img src="assets/icons/settings.png" alt="" />
+              <span>Configurações</span>
+            </button>
+            <button type="button" data-app="missions">
+              <img src="assets/learning/icons/target_arrow.svg" alt="" />
+              <span>Missões</span>
+            </button>
+            <button type="button" data-app="exercises">
+              <img src="assets/learning/icons/wrench.svg" alt="" />
+              <span>Exercícios</span>
+            </button>
+            <button type="button" data-app="vpn">
+              <img src="assets/learning/icons/shield_checkmark.svg" alt="" />
+              <span>VPN</span>
+            </button>
+            <button type="button" data-app="vpnlab">
+              <img src="assets/learning/icons/globe_search.svg" alt="" />
+              <span>Laboratório VPN</span>
+            </button>
+            <button type="button" data-app="installlab">
+              <img src="assets/programs/install-lab.svg" alt="" />
+              <span>Instalação</span>
+            </button>
+            <button type="button" data-app="browsertrail">
+              <img src="assets/learning/icons/globe_search.svg" alt="" />
+              <span>Navegadores e Internet</span>
+            </button>
+            <button type="button" data-app="browsermuseum">
+              <img src="assets/learning/icons/apps.svg" alt="" />
+              <span>Conhecendo os Navegadores</span>
+            </button>
+            <button type="button" data-app="controlpanel">
+              <img src="assets/programs/control-panel.png" alt="" />
+              <span>Painel de Controle</span>
+            </button>
+          </div>
+          <footer class="start-footer">
+            <button type="button" class="profile-button">
+              <img src="assets/icons/avatar.webp" alt="" />
+              <span>Aluno</span>
+            </button>
+            <button type="button" class="profile-button pwa-start-install" data-pwa-install>
+              <img src="assets/icons/context/restore-item.png" alt="" />
+              <span>Instalar offline</span>
+            </button>
+            <button id="power-button" type="button" class="power-button" aria-label="Energia">
+              <img src="assets/icons/ui/power.png" alt="" />
+            </button>
+          </footer>
+        </div>
+
+        <div id="search-panel" class="search-panel flyout is-hidden" aria-label="Pesquisar">
+          <label class="global-search">
+            <img src="assets/icons/search.png" alt="" />
+            <input id="global-search-input" type="search" placeholder="Pesquisar aplicativos e arquivos" />
+          </label>
+          <div id="search-results" class="search-results">
+            <p>Principais aplicativos</p>
+            <button type="button" data-app="explorer">
+              <img src="assets/icons/explorer.png" alt="" />
+              <span><strong>Explorador de Arquivos</strong><small>Aplicativo</small></span>
+            </button>
+            <button type="button" data-app="settings">
+              <img src="assets/icons/settings.png" alt="" />
+              <span><strong>Configurações</strong><small>Aplicativo</small></span>
+            </button>
+          </div>
+        </div>
+
+        <div id="quick-panel" class="quick-panel flyout is-hidden" aria-label="Configurações rápidas">
+          <div class="quick-actions">
+            <button type="button" class="is-active" data-quick-action="wifi">
+              <span class="quick-tile"><img src="assets/icons/ui/wifi.png" alt="" /></span>
+              <span>Wi-Fi</span>
+            </button>
+            <button type="button" data-quick-action="bluetooth">
+              <span class="quick-tile"><img src="assets/icons/ui/bluetooth.png" alt="" /></span>
+              <span>Bluetooth</span>
+            </button>
+            <button type="button" data-quick-action="airplane">
+              <span class="quick-tile"><img src="assets/icons/ui/airplane.png" alt="" /></span>
+              <span>Modo avião</span>
+            </button>
+            <button type="button" data-quick-action="battery-saver">
+              <span class="quick-tile"><img src="assets/icons/ui/battery.png" alt="" /></span>
+              <span>Economia de bateria</span>
+            </button>
+            <button type="button" class="is-active" data-quick-action="theme">
+              <span class="quick-tile"><img src="assets/icons/ui/moon.png" alt="" /></span>
+              <span>Tema</span>
+            </button>
+            <button type="button" data-quick-action="night-light">
+              <span class="quick-tile"><img src="assets/icons/ui/nightlight.png" alt="" /></span>
+              <span>Luz noturna</span>
+            </button>
+          </div>
+          <div class="quick-sliders">
+            <label class="quick-slider">
+              <img src="assets/icons/ui/brightness.png" alt="Brilho" />
+              <input id="brightness-slider" type="range" min="20" max="100" value="86" />
+            </label>
+            <label class="quick-slider">
+              <button id="mute-button" type="button" aria-label="Silenciar som"><img src="assets/icons/ui/audio.png" alt="" /></button>
+              <input id="volume-slider" type="range" min="0" max="100" value="100" />
+            </label>
+          </div>
+          <footer class="quick-footer">
+            <div class="battery-status">
+              <img src="assets/icons/ui/battery.png" alt="Bateria" />
+              <strong>100%</strong>
+            </div>
+          </footer>
+        </div>
+
+        <div id="calendar-panel" class="calendar-panel flyout is-hidden" aria-label="Data e hora">
+          <p id="calendar-date"></p>
+          <strong id="calendar-time"></strong>
+        </div>
+
+        <div id="power-menu" class="power-menu is-hidden" aria-label="Opções de energia">
+          <button type="button" data-power-action="restart">Reiniciar</button>
+          <button type="button" data-power-action="lock">Bloquear</button>
+        </div>
+
+        <div id="context-menu" class="context-menu is-hidden" role="menu" aria-label="Menu da área de trabalho">
+          <div class="context-menu-entry has-submenu">
+            <button type="button" role="menuitem" aria-haspopup="true">
+              <img src="assets/icons/context/view.png" alt="" /><span>Exibir</span><b>›</b>
+            </button>
+            <div class="context-submenu" role="menu" aria-label="Exibir">
+              <button type="button" role="menuitem" data-context-action="view-large"><span>Ícones grandes</span></button>
+              <button type="button" role="menuitem" data-context-action="view-medium"><span>Ícones médios</span></button>
+              <button type="button" role="menuitem" data-context-action="view-small"><span>Ícones pequenos</span></button>
+            </div>
+          </div>
+          <div class="context-menu-entry has-submenu">
+            <button type="button" role="menuitem" aria-haspopup="true">
+              <img src="assets/icons/context/sort.png" alt="" /><span>Classificar por</span><b>›</b>
+            </button>
+            <div class="context-submenu" role="menu" aria-label="Classificar por">
+              <button type="button" role="menuitem" data-context-action="sort-manual"><span>Ordem manual</span></button>
+              <button type="button" role="menuitem" data-context-action="sort-name"><span>Nome</span></button>
+              <button type="button" role="menuitem" data-context-action="sort-date"><span>Data de modificação</span></button>
+            </div>
+          </div>
+          <button type="button" role="menuitem" data-context-action="refresh">
+            <img src="assets/icons/context/refresh.png" alt="" /><span>Atualizar</span>
+          </button>
+          <button type="button" role="menuitem" data-context-action="undo-rename">
+            <img src="assets/icons/context/rename.png" alt="" /><span>Desfazer Renomear</span><small>Ctrl+Z</small>
+          </button>
+          <i></i>
+          <div class="context-menu-entry has-submenu">
+            <button type="button" role="menuitem" aria-haspopup="true">
+              <img src="assets/icons/context/new.png" alt="" /><span>Novo</span><b>›</b>
+            </button>
+            <div class="context-submenu context-new-submenu" role="menu" aria-label="Novo">
+              <button type="button" role="menuitem" data-context-action="new-folder">
+                <img src="assets/icons/win/folder.png" alt="" /><span>Pasta</span>
+              </button>
+              <button type="button" role="menuitem" data-context-action="new-shortcut">
+                <img src="assets/icons/context/link.png" alt="" /><span>Atalho</span>
+              </button>
+              <button type="button" role="menuitem" data-context-action="new-text">
+                <img src="assets/icons/notepad.png" alt="" /><span>Documento de Texto</span>
+              </button>
+            </div>
+          </div>
+          <i></i>
+          <button type="button" role="menuitem" data-context-action="display">
+            <img src="assets/icons/context/display.png" alt="" /><span>Configurações de exibição</span>
+          </button>
+          <button type="button" role="menuitem" data-context-action="personalize">
+            <img src="assets/icons/context/personalize.png" alt="" /><span>Personalizar</span>
+          </button>
+          <i></i>
+          <button type="button" role="menuitem" data-context-action="terminal">
+            <img src="assets/icons/terminal.png" alt="" /><span>Abrir no Terminal</span>
+          </button>
+          <i></i>
+          <button type="button" role="menuitem" data-context-action="more">
+            <img src="assets/icons/context/more.png" alt="" /><span>Mostrar mais opções</span>
+          </button>
+        </div>
+
+        <div id="item-context-menu" class="item-context-menu is-hidden" role="menu" aria-label="Opções do item">
+          <button type="button" role="menuitem" data-item-action="open">
+            <img src="assets/icons/win/folder.png" alt="" data-item-menu-icon /><span>Abrir</span><small>Enter</small>
+          </button>
+          <button type="button" role="menuitem" data-item-action="pin-quick">
+            <img src="assets/icons/context/link.png" alt="" /><span>Fixar no Acesso rápido</span>
+          </button>
+          <button type="button" role="menuitem" data-item-action="pin-start">
+            <img src="assets/icons/start.png" alt="" /><span>Fixar em Iniciar</span>
+          </button>
+          <button type="button" role="menuitem" data-item-action="compress">
+            <img src="assets/icons/win/folder.png" alt="" /><span>Compactar para...</span><b>›</b>
+          </button>
+          <button type="button" role="menuitem" data-item-action="copy-path">
+            <img src="assets/icons/context/copy.png" alt="" /><span>Copiar como caminho</span><small>Ctrl+Shift+C</small>
+          </button>
+          <button type="button" role="menuitem" data-item-action="properties">
+            <img src="assets/icons/settings.png" alt="" /><span>Propriedades</span><small>Alt+Enter</small>
+          </button>
+          <i></i>
+          <button type="button" role="menuitem" data-item-action="terminal">
+            <img src="assets/icons/terminal.png" alt="" /><span>Abrir no Terminal</span>
+          </button>
+          <i></i>
+          <button type="button" role="menuitem" data-item-action="more">
+            <img src="assets/icons/context/more.png" alt="" /><span>Mostrar mais opções</span>
+          </button>
+          <div class="item-context-actions" aria-label="Ações rápidas">
+            <button type="button" data-item-action="cut"><img src="assets/icons/context/cut.png" alt="" /><span>Recortar</span></button>
+            <button type="button" data-item-action="copy"><img src="assets/icons/context/copy.png" alt="" /><span>Copiar</span></button>
+            <button type="button" data-item-action="rename"><img src="assets/icons/context/rename.png" alt="" /><span>Renomear</span></button>
+            <button type="button" data-item-action="delete"><img src="assets/icons/context/delete.png" alt="" /><span>Excluir</span></button>
+          </div>
+        </div>
+
+        <div id="taskbar-context-menu" class="taskbar-context-menu is-hidden" role="menu" aria-label="Opções da barra de tarefas">
+          <button type="button" role="menuitem" data-taskbar-action="task-manager">
+            <img src="assets/icons/taskmanager.png" alt="" /><span>Gerenciador de Tarefas</span>
+          </button>
+          <button type="button" role="menuitem" data-taskbar-action="taskbar-settings">
+            <img src="assets/icons/settings.png" alt="" /><span>Configurações da barra de tarefas</span>
+          </button>
+        </div>
+
+        <nav class="taskbar" aria-label="Barra de tarefas">
+          <div class="taskbar-center">
+            <button id="start-button" class="taskbar-button" type="button" aria-label="Iniciar" aria-expanded="false">
+              <img src="assets/icons/start.png" alt="" />
+            </button>
+            <button id="search-button" class="taskbar-button" type="button" aria-label="Pesquisar" aria-expanded="false">
+              <img src="assets/icons/search.png" alt="" />
+            </button>
+            <button class="taskbar-button task-app" type="button" data-app="explorer" aria-label="Explorador de Arquivos">
+              <img src="assets/icons/explorer.png" alt="" />
+            </button>
+            <button class="taskbar-button task-app" type="button" data-app="google" aria-label="Google Chrome">
+              <img src="assets/browser/chrome.svg" alt="" />
+            </button>
+            <button class="taskbar-button task-app" type="button" data-app="settings" aria-label="Configurações">
+              <img src="assets/icons/settings.png" alt="" />
+            </button>
+            <button class="taskbar-button task-app taskbar-runtime-app" type="button" data-app="taskmanager" aria-label="Gerenciador de Tarefas">
+              <img src="assets/icons/taskmanager.png" alt="" />
+            </button>
+            <span id="runtime-taskbar-apps" class="runtime-taskbar-apps" aria-label="Aplicativos abertos"></span>
+          </div>
+          <div class="taskbar-right">
+            <button id="vpn-indicator" class="vpn-indicator is-hidden" type="button" data-app="vpn" aria-label="VPN desconectada">
+              <img src="assets/learning/icons/shield_checkmark.svg" alt="" />
+              <span>VPN</span>
+            </button>
+            <button id="quick-settings-button" class="system-tray" type="button" aria-label="Rede, volume e bateria" aria-expanded="false">
+              <img src="assets/icons/ui/wifi.png" alt="" />
+              <img id="taskbar-audio-icon" src="assets/icons/ui/audio.png" alt="" />
+              <img src="assets/icons/ui/battery.png" alt="" />
+            </button>
+            <button id="clock-button" class="task-clock" type="button" aria-label="Abrir data e hora" aria-expanded="false">
+              <span id="taskbar-time"></span>
+              <span id="taskbar-date"></span>
+            </button>
+            <button id="show-desktop-button" class="show-desktop" type="button" aria-label="Mostrar área de trabalho"></button>
+          </div>
+        </nav>
+      </section>
+    </main>
+
+    <noscript>O OSLab precisa de JavaScript habilitado para funcionar.</noscript>
+    <script defer src="remote-bootstrap.js"></script>
+    <script defer src="js/core/os-events.js"></script>
+    <script defer src="js/core/app-registry.js"></script>
+    <script defer src="js/core/file-system.js"></script>
+    <script defer src="js/core/process-manager.js"></script>
+    <script defer src="js/core/network-manager.js"></script>
+    <script defer src="js/core/system-state.js"></script>
+    <script defer src="js/core/activity-coordinator.js"></script>
+    <script defer src="js/install/software-state.js"></script>
+    <script defer src="js/install/install-mission-catalog.js"></script>
+    <script defer src="js/install/install-mission-storage.js"></script>
+    <script defer src="js/install/install-mission-engine.js"></script>
+    <script defer src="js/missions/mission-catalog.js"></script>
+    <script defer src="js/missions/mission-storage.js"></script>
+    <script defer src="js/missions/mission-engine.js"></script>
+    <script defer src="js/exercises/exercise-storage.js"></script>
+    <script defer src="js/exercises/exercise-catalog.js"></script>
+    <script defer src="js/exercises/exercise-engine.js"></script>
+    <script defer src="js/vpn/vpn-state.js"></script>
+    <script defer src="js/vpn/vpn-mission-catalog.js"></script>
+    <script defer src="js/vpn/vpn-lab-storage.js"></script>
+    <script defer src="js/vpn/vpn-lab-engine.js"></script>
+    <script defer src="js/browser/browser-state.js"></script>
+    <script defer src="js/browser/browser-trail.js"></script>
+    <script defer src="js/browser/browser-museum.js"></script>
+    <script defer src="js/ui/system-ui.js"></script>
+    <script defer src="js/ui/learning-path.js"></script>
+    <script defer src="js/ui/assistant-robot.js"></script>
+    <script defer src="js/apps/missions-app.js"></script>
+    <script defer src="js/apps/install-lab-app.js"></script>
+    <script defer src="js/apps/exercises-app.js"></script>
+    <script defer src="js/apps/task-manager.js"></script>
+    <script defer src="js/apps/terminal-app.js"></script>
+    <script defer src="js/apps/browser-app.js"></script>
+    <script defer src="js/apps/browser-trails-app.js"></script>
+    <script defer src="js/apps/software-apps.js"></script>
+    <script defer src="js/apps/vpn-app.js"></script>
+    <script defer src="js/apps/vpn-lab-app.js"></script>
+    <script defer src="js/apps/system-tools.js"></script>
+    <script defer src="script.js"></script>
+    <script defer src="remote-bridge.js"></script>
+    <script defer src="js/pwa.js"></script>
+  </body>
+</html>

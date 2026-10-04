@@ -1,0 +1,57 @@
+.taskmanager-window .window-content { overflow: hidden; background: #f6f6f6; }
+.taskmanager-window .window-titlebar { height: 48px; flex-basis: 48px; background: #f6f6f6; }
+.taskmanager-window .settings-title-search { width: min(430px, calc(100% - 430px)); }
+.taskmanager-page { display: grid; height: 100%; grid-template-columns: 238px minmax(0, 1fr); color: #202020; background: #f6f6f6; }
+.taskmanager-sidebar { display: flex; min-height: 0; flex-direction: column; border-right: 1px solid #e4e4e4; padding: 8px 6px 10px; }
+.taskmanager-hamburger { display: flex; height: 38px; align-items: center; padding: 0 10px; }
+.taskmanager-hamburger img { width: 17px; height: 17px; object-fit: contain; }
+.taskmanager-sidebar nav { display: grid; gap: 2px; }
+.taskmanager-sidebar button { position: relative; display: grid; width: 100%; height: 39px; grid-template-columns: 26px minmax(0, 1fr); border: 0; border-radius: 5px; align-items: center; gap: 8px; padding: 0 10px; background: transparent; color: #222; font: inherit; font-size: 13px; text-align: left; }
+.taskmanager-sidebar button:hover, .taskmanager-sidebar button.is-active { background: #e9e9e9; }
+.taskmanager-sidebar button.is-active::before { position: absolute; top: 9px; bottom: 9px; left: 0; width: 3px; border-radius: 3px; background: #0067c0; content: ""; }
+.taskmanager-sidebar button img { width: 18px; height: 18px; object-fit: contain; }
+.taskmanager-settings { margin-top: auto; }
+.taskmanager-workspace { display: flex; min-width: 0; min-height: 0; flex-direction: column; padding: 12px 0 0 12px; }
+.taskmanager-commandbar { display: flex; height: 48px; flex: 0 0 48px; align-items: center; justify-content: space-between; border: 1px solid #e1e1e1; border-bottom: 0; border-radius: 8px 0 0; padding: 0 12px 0 16px; background: #fff; }
+.taskmanager-commandbar h2 { margin: 0; font-size: 14px; font-weight: 600; }
+.taskmanager-commandbar > div { display: flex; align-items: center; gap: 2px; }
+.taskmanager-commandbar button { display: flex; height: 34px; border: 0; border-radius: 4px; align-items: center; gap: 7px; padding: 0 10px; background: transparent; color: #202020; font: inherit; font-size: 12px; }
+.taskmanager-commandbar button:hover:not(:disabled) { background: #ededed; }
+.taskmanager-commandbar button:disabled { color: #aaa; opacity: .55; }
+.taskmanager-commandbar button img { width: 17px; height: 17px; object-fit: contain; }
+.task-process-table { min-height: 0; flex: 1; overflow: auto; border: 1px solid #e1e1e1; border-radius: 0 0 0 8px; background: #fff; }
+.task-process-head, .task-process-row { display: grid; min-width: 720px; grid-template-columns: minmax(300px, 1fr) 120px 74px 86px 78px 78px; align-items: stretch; }
+.task-process-head { position: sticky; z-index: 3; top: 0; height: 52px; border-bottom: 1px solid #e6e6e6; background: #fff; }
+.task-col-head { position: relative; display: flex; min-width: 0; border: 0; border-right: 1px solid #e9e9e9; align-items: center; justify-content: center; gap: 3px; padding: 4px 8px; background: #fff; color: #555; font: inherit; font-size: 11px; }
+.task-col-head:first-child, .task-col-head:nth-child(2) { justify-content: flex-start; }
+.task-col-head strong { color: #181818; font-size: 15px; font-weight: 500; }
+.task-col-head img { width: 9px; height: 9px; transform: rotate(90deg); opacity: .65; }
+.task-col-head.is-sorted { border: 1px solid #292929; border-top: 0; background: #f9f9f9; }
+.task-process-row { width: 100%; min-height: 39px; border: 0; background: #fff; color: #111; font: inherit; font-size: 12px; text-align: left; }
+.task-process-row:hover, .task-process-row.is-selected { background: #eaf4fb; }
+.task-process-row > span { display: flex; min-width: 0; align-items: center; border-right: 1px solid rgba(0,0,0,.04); padding: 0 8px; overflow: hidden; white-space: nowrap; }
+.task-process-row .task-use { justify-content: flex-end; background: rgba(132, 209, 247, var(--heat)); font-variant-numeric: tabular-nums; }
+.task-process-name { display: grid !important; grid-template-columns: 14px 20px minmax(0, 1fr); gap: 7px; }
+.task-process-name > i { width: 14px; }
+.task-process-name > img { width: 17px; height: 17px; object-fit: contain; }
+.task-process-name strong { overflow: hidden; font-weight: 400; text-overflow: ellipsis; }
+.task-group-toggle { display: flex; width: 14px; height: 24px; border: 0; align-items: center; justify-content: center; padding: 0; background: transparent; }
+.task-group-toggle img { width: 8px; height: 8px; object-fit: contain; }
+.task-process-status { justify-content: flex-end; gap: 6px; }
+.task-process-status img { width: 16px; height: 16px; object-fit: contain; }
+.task-process-status em { overflow: hidden; color: #9b2e21; font-size: 11px; font-style: normal; text-overflow: ellipsis; }
+.task-process-children { display: grid; grid-template-columns: minmax(300px, 1fr) 1fr; min-width: 720px; min-height: 30px; align-items: center; border-bottom: 1px solid #f0f0f0; background: #fafafa; color: #666; font-size: 11px; }
+.task-process-children span:last-child { padding-left: 44px; }
+.task-no-results { margin: 40px; color: #666; font-size: 13px; text-align: center; }
+.taskmanager-info-page { display: flex; min-height: 0; flex: 1; flex-direction: column; align-items: center; justify-content: center; margin: 0 18px 18px 0; border: 1px solid #e2e2e2; border-radius: 8px; background: #fff; text-align: center; }
+.taskmanager-info-page > img { width: 52px; height: 52px; object-fit: contain; }
+.taskmanager-info-page h2 { margin: 18px 0 5px; font-size: 22px; }
+.taskmanager-info-page p { max-width: 420px; color: #666; }
+.taskmanager-info-page button { height: 34px; border: 1px solid #b8b8b8; border-radius: 4px; padding: 0 16px; background: #fafafa; }
+@media (max-width: 850px) {
+  .taskmanager-page { grid-template-columns: 58px minmax(0, 1fr); }
+  .taskmanager-sidebar button { grid-template-columns: 26px; justify-content: center; }
+  .taskmanager-sidebar button span { display: none; }
+  .taskmanager-commandbar button span { display: none; }
+  .taskmanager-workspace { padding-left: 6px; }
+}
