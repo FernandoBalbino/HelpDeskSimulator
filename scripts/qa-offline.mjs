@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import assert from 'node:assert/strict';
 import { launchNativeBrowser } from './browser-tools.mjs';
+import { tickets } from '../js/helpdesk/tickets.mjs';
 const url = process.env.QA_URL || 'http://127.0.0.1:4173/';
 const native = await launchNativeBrowser();
 const browser = native.browser;
@@ -27,7 +28,7 @@ async function connect(id) {
 try {
   await page.goto(url);
   await page.waitForFunction(() => navigator.serviceWorker.controller && [...document.querySelectorAll('[data-offline]')].some((e) => e.textContent.includes('Disponível offline')), null, { timeout: 60000 });
-  const caches = await page.evaluate(async () => ({ versions: await window.caches.keys(), registrations: (await navigator.serviceWorker.getRegistrations()).map((r) => r.scope), entries: (await (await window.caches.open('helpdesk-offline-v2')).keys()).length }));
+  const caches = await page.evaluate(async () => ({ versions: await window.caches.keys(), registrations: (await navigator.serviceWorker.getRegistrations()).map((r) => r.scope), entries: (await (await window.caches.open('helpdesk-offline-v3')).keys()).length }));
   assert.ok(caches.entries >= 273); assert.equal(caches.registrations.length, 1);
   await page.locator('[data-start]').focus(); assert.equal(await page.locator('[data-start]').evaluate((e) => e.matches(':focus-visible')), true);
   await page.locator('[data-start]').press('Enter');
@@ -45,12 +46,12 @@ try {
   await page.waitForTimeout(1600);
   const hidden = await page.evaluate(() => ({ time: window.HelpDesk.engine.state.elapsedMs, events: window.HelpDesk.engine.state.events.length, remote: document.querySelector('iframe').contentWindow.OSLab.runtimeNow() }));
   assert.deepEqual(hidden, before); await page.bringToFront(); await page.waitForFunction(() => !document.hidden); await other.close();
-  await advance(1000000);
-  // Visit all ten desktops, then reload offline and restore every snapshot.
-  const ids = ['lucas', 'mariana', 'rafael', 'ana', 'carlos', 'gabriela', 'pedro', 'juliana', 'bruno', 'fernanda'];
+  await page.evaluate(() => window.HelpDesk.engine.advance(window.HelpDesk.engine.state.schedule.at(-1).at - window.HelpDesk.engine.state.elapsedMs + 1));
+  // Visit all fifteen desktops, then reload offline and restore every snapshot.
+  const ids = tickets.map((ticket) => ticket.id);
   for (const id of ids.slice(1)) await connect(id);
   const saved = await page.evaluate(() => window.HelpDesk.engine.snapshot());
-  await context.setOffline(true); await page.reload(); await ready('fernanda');
+  await context.setOffline(true); await page.reload(); await ready('andre');
   assert.equal((await page.evaluate(() => window.HelpDesk.engine.state.id)), saved.id);
   for (const id of ids) { await select(id); const pc = await ready(id); assert.ok(await pc.locator('#desktop').isVisible()); }
   assert.equal(await page.evaluate(async () => (await navigator.serviceWorker.getRegistrations()).length), 1);
@@ -61,8 +62,8 @@ try {
   const resumed = await context.newPage(); await resumed.goto(url); await resumed.waitForFunction(() => window.HelpDesk?.engine);
   assert.ok((await resumed.evaluate(() => window.HelpDesk.engine.state.elapsedMs)) - time < 1000);
   assert.deepEqual(errors, []);
-  fs.writeFileSync('qa-evidence/offline.json', JSON.stringify({ url, caches, pausedTab: true, closedTab: true, offlineComputers: 10, consoleErrors: errors }, null, 2));
-  console.log('OK PWA: um Service Worker, precache completo, pausa real, retomada da aba fechada e dez computadores offline.');
+  fs.writeFileSync('qa-evidence/offline.json', JSON.stringify({ url, caches, pausedTab: true, closedTab: true, offlineComputers: ids.length, consoleErrors: errors }, null, 2));
+  console.log('OK PWA: um Service Worker, precache completo, pausa real, retomada da aba fechada e quinze computadores offline.');
 } catch (error) {
   if (!page.isClosed()) await page.screenshot({ path: 'qa-evidence/offline-failure.png', fullPage: true });
   console.log('ERROS DO NAVEGADOR', errors); throw error;

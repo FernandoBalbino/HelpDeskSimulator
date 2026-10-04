@@ -8,6 +8,7 @@
   const timers = new Map();
 
   const programs = Object.freeze({
+    firefox: Object.freeze({ id: "firefox", name: "Mozilla Firefox", icon: "assets/browser/firefox.png", version: "Simulada", publisher: "Mozilla · simulação educacional", size: "60 MB" }),
     appjavafx: Object.freeze({ id: "appjavafx", name: "AppJavaFX", icon: "assets/programs/appjavafx.svg", version: "1.0.0", publisher: "OSLAB Software", size: "80 MB" }),
     word: Object.freeze({ id: "word", name: "Word", icon: "assets/programs/word.svg", version: "2026.1", publisher: "OSLAB Educação", size: "146 MB" }),
     excel: Object.freeze({ id: "excel", name: "Excel", icon: "assets/programs/excel.svg", version: "2026.1", publisher: "OSLAB Educação", size: "138 MB" }),
@@ -15,6 +16,7 @@
   });
 
   const installers = Object.freeze({
+    firefox: Object.freeze({ id: "firefox", productName: "Mozilla Firefox", fileName: "Firefox-Setup.exe", totalMb: 60, programIds: ["firefox"], icon: "assets/browser/firefox.png" }),
     appjavafx: Object.freeze({ id: "appjavafx", productName: "AppJavaFX", fileName: "AppJavaFX-Setup.exe", totalMb: 80, programIds: ["appjavafx"], icon: "assets/programs/appjavafx.svg" }),
     office: Object.freeze({ id: "office", productName: "Pacote Office", fileName: "OfficeSetup.exe", totalMb: 420, programIds: ["word", "excel", "slides"], icon: "assets/programs/office.svg" }),
   });
@@ -172,7 +174,7 @@
       state.installedPrograms[programId] = {
         ...state.installedPrograms[programId],
         installed: true,
-        desktopShortcut: programId === "appjavafx" ? Boolean(options.desktopShortcut) : false,
+        desktopShortcut: ["appjavafx", "firefox"].includes(programId) ? Boolean(options.desktopShortcut) : false,
         startMenuShortcut: true,
         installDate,
       };
@@ -226,7 +228,8 @@
     getState: () => clone(state),
     restoreSnapshot(input) {
       timers.forEach((timer) => global.clearInterval(timer)); timers.clear();
-      state = input ? { ...defaults(), ...clone(input) } : defaults();
+      const base = defaults(); const saved = input ? clone(input) : {};
+      state = { ...base, ...saved, installedPrograms: { ...base.installedPrograms, ...saved.installedPrograms } };
       save(); resumeDownloads();
       OSLab.shell?.refreshPrograms?.();
     },

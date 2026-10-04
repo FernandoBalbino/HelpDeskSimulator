@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'helpdesk-offline-v2';
+const CACHE_VERSION = 'helpdesk-offline-v3';
 const scoped = (value) => new URL(value, self.registration.scope).href;
 self.addEventListener('install', (event) => {
   event.waitUntil(fetch(scoped('./precache-manifest.json'), { cache: 'no-store' }).then((r) => { if (!r.ok) throw new Error('Precache indisponível'); return r.json(); }).then((files) => caches.open(CACHE_VERSION).then((cache) => cache.addAll(files.map(scoped)))));

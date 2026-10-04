@@ -4,7 +4,7 @@ export const clone = (value) => value == null ? value : JSON.parse(JSON.stringif
 export function loadShift(storage) {
   try {
     const saved = JSON.parse(storage?.getItem(STORAGE_KEY) || 'null');
-    if (saved?.version !== 1 || !Array.isArray(saved.events) || !saved.tickets || !['intro', 'running', 'finished'].includes(saved.phase)) return null;
+    if (![1, 2].includes(saved?.version) || !Array.isArray(saved.events) || !saved.tickets || !['intro', 'running', 'finished'].includes(saved.phase)) return null;
     return saved;
   } catch { return null; }
 }

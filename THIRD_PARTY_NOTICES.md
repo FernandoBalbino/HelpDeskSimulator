@@ -15,6 +15,28 @@ Os avisos originais são preservados em [windows/THIRD_PARTY_NOTICES.md](windows
 
 [Customer Support Dashboard UI Kit](https://www.figma.com/design/6UYQWYigSqjdyGbw7iTF5X/Customer-Support-Dashboard-UI-Kit--Community-), de Silverthread Labs. Consultado como inspiração de paleta, cards, navegação e estados. Nenhuma captura do Figma é utilizada como tela da aplicação.
 
+## Fotografias dos perfis
+
+As quinze fotos são do banco [Unsplash](https://unsplash.com), baixadas como arquivos locais para funcionar também offline. A [licença do Unsplash](https://unsplash.com/license) permite download e uso gratuito, inclusive comercial. Os créditos também aparecem em **Perfil e créditos da foto**, dentro de cada atendimento. As fotos ilustram personagens fictícios; as pessoas retratadas não participam desses atendimentos nem endossam este projeto.
+
+| Perfil fictício | Fotógrafo e foto original |
+|---|---|
+| Lucas Almeida | [Joseph Gonzalez](https://unsplash.com/photos/iFgRcqHznqg) |
+| Mariana Costa | [Jake Nackos](https://unsplash.com/photos/IF9TK5Uy-KI) |
+| Rafael Oliveira | [Albert Dera](https://unsplash.com/photos/ILip77SbmOE) |
+| Ana Beatriz | [Rachel McDermott](https://unsplash.com/photos/0fN7Fxv1eWA) |
+| Carlos Henrique | [Mostafa KordZangeneh](https://unsplash.com/photos/_tcJW4nqVtw) |
+| Gabriela Martins | [Navid Sohrabi](https://unsplash.com/photos/6pRuIiz6028) |
+| Pedro Santos | [Alyona Grishina](https://unsplash.com/photos/BBmi4nJjKk8) |
+| Juliana Lima | [Hale Tat](https://unsplash.com/photos/5b_RXCDykto) |
+| Bruno Ferreira | [LinkedIn Sales Solutions](https://unsplash.com/photos/pAtA8xe_iVM) |
+| Fernanda Rocha | [Maria Lupan](https://unsplash.com/photos/fE5IaNta2KM) |
+| Tiago Souza | [Danny Postma](https://unsplash.com/photos/zNxOw2JFNKs) |
+| Beatriz Nunes | [Valeria Lendel](https://unsplash.com/photos/0b_7r_dNjFs) |
+| Diego Ribeiro | [Rui Silvestre](https://unsplash.com/photos/jCeVRUQslTs) |
+| Sofia Mendes | [Olena Bohovyk](https://unsplash.com/photos/eh9f505ljSA) |
+| André Lopes | [Vicky Hladynets](https://unsplash.com/photos/_gDoyVv5F4c) |
+
 ## Recursos próprios
 
-A marca HelpDesk e os dez retratos vetoriais são ilustrações locais criadas para o simulador. Os nomes e as pessoas dos atendimentos são fictícios. Os prints do chat são capturas dos computadores simulados deste projeto.
+A marca HelpDesk é uma ilustração local criada para o simulador. Os antigos retratos vetoriais próprios permanecem apenas para compatibilidade com abas abertas na versão anterior; os perfis atuais usam as fotografias acima. Os nomes e os atendimentos são fictícios. Os prints do chat são capturas dos computadores simulados deste projeto.

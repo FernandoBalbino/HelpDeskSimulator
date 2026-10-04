@@ -11,15 +11,15 @@
   function installerStepMarkup(record, installer) {
     const step = Number(record.installerStep) || 1;
     if (step === 1) return `<div class="installer-copy"><small>ASSISTENTE DE INSTALAÇÃO</small><h1>Bem-vindo ao Assistente de Instalação do ${safe(installer.productName)}</h1><p>Este assistente instalará ${safe(installer.productName)} no computador simulado. Feche outros programas antes de continuar.</p><p class="installer-note">Nenhum arquivo executável real será iniciado.</p></div>`;
-    if (step === 2) return `<div class="installer-copy"><small>LOCAL DE INSTALAÇÃO</small><h1>Escolha a pasta de destino</h1><p>O programa será instalado na pasta abaixo.</p><label class="installer-path"><span>Destino</span><input value="C:\\Program Files\\${safe(installer.productName)}" readonly /><button type="button" disabled>Procurar...</button></label><p>Espaço necessário: <strong>${installer.id === "office" ? "405 MB" : "80 MB"}</strong></p></div>`;
+    if (step === 2) return `<div class="installer-copy"><small>LOCAL DE INSTALAÇÃO</small><h1>Escolha a pasta de destino</h1><p>O programa será instalado na pasta abaixo.</p><label class="installer-path"><span>Destino</span><input value="C:\\Program Files\\${safe(installer.productName)}" readonly /><button type="button" disabled>Procurar...</button></label><p>Espaço necessário: <strong>${installer.totalMb} MB</strong></p></div>`;
     if (step === 3) return `<div class="installer-copy"><small>OPÇÕES ADICIONAIS</small><h1>${installer.id === "office" ? "Componentes do pacote" : "Selecione tarefas adicionais"}</h1>${installer.id === "office" ? `<div class="installer-components"><span><img src="assets/programs/word.svg" alt="" />Word</span><span><img src="assets/programs/excel.svg" alt="" />Excel</span><span><img src="assets/programs/slides.svg" alt="" />Apresentações Slides</span></div><p>Os três aplicativos serão adicionados ao Menu Iniciar.</p>` : `<label class="installer-checkbox${highlighted("desktop-checkbox")}"><input type="checkbox" data-installer-shortcut ${record.createDesktopShortcut ? "checked" : ""} /><span><strong>Criar atalho na Área de Trabalho</strong><small>Você também poderá abrir o programa pelo Menu Iniciar.</small></span></label>`}</div>`;
-    if (step === 4) return `<div class="installer-copy"><small>PRONTO PARA INSTALAR</small><h1>Pronto para instalar ${safe(installer.productName)}</h1><p>Clique em Instalar para iniciar. Você poderá acompanhar cada etapa do processo.</p><dl class="installer-summary"><div><dt>Destino</dt><dd>C:\\Program Files\\${safe(installer.productName)}</dd></div><div><dt>Menu Iniciar</dt><dd>Atalho será criado</dd></div>${installer.id === "appjavafx" ? `<div><dt>Área de Trabalho</dt><dd>${record.createDesktopShortcut ? "Criar atalho" : "Não criar atalho"}</dd></div>` : ""}</dl></div>`;
+    if (step === 4) return `<div class="installer-copy"><small>PRONTO PARA INSTALAR</small><h1>Pronto para instalar ${safe(installer.productName)}</h1><p>Clique em Instalar para iniciar. Você poderá acompanhar cada etapa do processo.</p><dl class="installer-summary"><div><dt>Destino</dt><dd>C:\\Program Files\\${safe(installer.productName)}</dd></div><div><dt>Menu Iniciar</dt><dd>Atalho será criado</dd></div>${installer.id !== "office" ? `<div><dt>Área de Trabalho</dt><dd>${record.createDesktopShortcut ? "Criar atalho" : "Não criar atalho"}</dd></div>` : ""}</dl></div>`;
     if (step === 5) {
       const progress = Math.max(0, Math.min(100, Number(record.installProgress) || 0));
       const message = progress < 22 ? "Copiando arquivos..." : progress < 45 ? "Criando diretórios..." : progress < 68 ? "Registrando componentes..." : progress < 88 ? "Criando atalhos..." : "Finalizando instalação...";
       return `<div class="installer-copy"><small>INSTALANDO</small><h1>Instalando ${safe(installer.productName)}</h1><p>Aguarde enquanto o assistente configura o programa.</p><div class="installer-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${progress}"><i style="width:${progress}%"></i></div><div class="installer-progress-copy"><span>${safe(message)}</span><strong>${progress}%</strong></div></div>`;
     }
-    return `<div class="installer-copy"><small>INSTALAÇÃO CONCLUÍDA</small><h1>${safe(installer.productName)} foi instalado</h1><p>O assistente concluiu a instalação com sucesso. Clique em Concluir para fechar esta janela.</p>${installer.id === "appjavafx" ? `<label class="installer-checkbox"><input type="checkbox" data-installer-launch ${record.launchAfterInstall ? "checked" : ""} /><span><strong>Iniciar AppJavaFX</strong><small>Abrir o programa ao fechar o assistente.</small></span></label>` : `<div class="installer-components is-complete"><span><img src="assets/programs/word.svg" alt="" />Word</span><span><img src="assets/programs/excel.svg" alt="" />Excel</span><span><img src="assets/programs/slides.svg" alt="" />Apresentações</span></div>`}</div>`;
+    return `<div class="installer-copy"><small>INSTALAÇÃO CONCLUÍDA</small><h1>${safe(installer.productName)} foi instalado</h1><p>O assistente concluiu a instalação com sucesso. Clique em Concluir para fechar esta janela.</p>${installer.id !== "office" ? `<label class="installer-checkbox"><input type="checkbox" data-installer-launch ${record.launchAfterInstall ? "checked" : ""} /><span><strong>Iniciar ${safe(installer.productName)}</strong><small>Abrir o programa ao fechar o assistente.</small></span></label>` : `<div class="installer-components is-complete"><span><img src="assets/programs/word.svg" alt="" />Word</span><span><img src="assets/programs/excel.svg" alt="" />Excel</span><span><img src="assets/programs/slides.svg" alt="" />Apresentações</span></div>`}</div>`;
   }
 
   function installerButtons(record) {
@@ -66,9 +66,10 @@
         return;
       }
       if (action === "finish") {
-        const openAfter = record.installerId === "appjavafx" && record.launchAfterInstall;
+        const programId = OSLab.software.installers[record.installerId]?.programIds[0];
+        const openAfter = record.installerId !== "office" && record.launchAfterInstall;
         OSLab.windowManager.close(record.windowId);
-        if (openAfter) OSLab.shell.openApp("appjavafx");
+        if (openAfter) OSLab.shell.openApp(programId);
         return;
       }
       renderInstaller(record);

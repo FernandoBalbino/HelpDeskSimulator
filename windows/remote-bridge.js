@@ -34,6 +34,15 @@
       case 'restore': {
         const report = file('bruno-report', 'Relatorio.pdf', fs.roots.documents, { mime: 'application/pdf', sizeBytes: 240000 }); fs.delete(report.id); break;
       }
+      case 'rename': file('tiago-task', 'atividade-final (1).docx', fs.roots.documents, { mime: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', content: 'Minha atividade de informática.', sizeBytes: 24000 }); break;
+      case 'copy': file('beatriz-notice', 'Comunicado.pdf', fs.roots.documents, { mime: 'application/pdf', sizeBytes: 120000 }); break;
+      case 'pictures': file('diego-photo', 'foto-feira.png', fs.roots.desktop, { mime: 'image/png', sizeBytes: 1800000 }); break;
+      case 'tabs': {
+        const record = OSLab.shell.openApp('google');
+        for (const address of ['hardware.oslab.local', 'youtube.com']) { OSLab.browserState.open(record.browserState, address); OSLab.browserApp.navigate(record, address); }
+        break;
+      }
+      case 'browser-install': file('andre-browser', 'Navegador desejado.txt', fs.roots.documents, { content: 'Gostaria de instalar e abrir o Firefox. Pode manter o Chrome instalado.' }); break;
       case 'storage': {
         file('fernanda-personal', 'Documentos pessoais.pdf', fs.roots.documents, { mime: 'application/pdf', sizeBytes: 2 * 1024 ** 2 });
         file('fernanda-planning', 'Planejamento.docx', fs.roots.documents, { sizeBytes: 1024 ** 2 });
@@ -74,7 +83,8 @@
     send();
     return snapshot();
   }
-  const allowed = new Set(['computer', 'explorer', 'recycle', 'settings', 'google', 'installer', 'appjavafx', 'controlpanel']);
+  const allowed = new Set(['computer', 'explorer', 'recycle', 'settings', 'google', 'firefox', 'installer', 'appjavafx', 'controlpanel']);
+  OSLab.apps.register('firefox', { ...OSLab.apps.get('firefox'), installedOnly: true });
   const originalOpen = OSLab.shell.openApp;
   OSLab.shell.openApp = (id, options) => allowed.has(id) ? originalOpen(id, options) : null;
   // The shell also enforces this capability set on its internal entrypoints.
@@ -87,9 +97,9 @@
     OSLab.systemState.restore(context.pc, { silent: true });
   } else seed();
 
-  document.querySelectorAll('[data-app]').forEach((button) => {
-    if (!allowed.has(button.dataset.app)) button.hidden = true;
-  });
+  function availableApps() { document.querySelectorAll('[data-app]').forEach((button) => { button.hidden = !allowed.has(button.dataset.app) || (button.dataset.app === 'firefox' && !OSLab.software.isInstalled('firefox')); }); }
+  availableApps(); OSLab.software.subscribe(availableApps);
+  OSLab.events.subscribe('app:opened', (event) => { if (event.detail.appId === 'firefox') OSLab.software.markOpened('firefox'); });
   document.querySelectorAll('[data-pwa-install]').forEach((button) => { button.hidden = true; });
   document.querySelector('#quick-panel footer').insertAdjacentHTML('beforebegin', '<div class="remote-quick-state"><span id="remote-audio-state"></span><button type="button" data-remote-network>Redes disponíveis</button></div>');
   function reflectAudio() {

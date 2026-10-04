@@ -22,11 +22,16 @@ function pcFor(type) {
   if (type === 'shortcut') pc.files.items = [item('juliana-materials', 'root-documents', { kind: 'folder' }), item('shortcut', 'root-desktop', { shortcutTargetId: 'juliana-materials' })];
   if (type === 'restore') pc.files.items = [item('bruno-report')];
   if (type === 'storage') pc.files.items = [item('fernanda-personal'), item('fernanda-planning')];
+  if (type === 'rename') pc.files.items = [item('tiago-task', 'root-documents', { name: 'Atividade de Informática.docx' })];
+  if (type === 'copy') pc.files.items = [item('beatriz-notice', 'root-documents', { name: 'Comunicado.pdf' }), item('notice-copy', 'root-desktop', { name: 'Comunicado.pdf', sourceId: 'beatriz-notice' })];
+  if (type === 'pictures') pc.files.items = [item('diego-photo', 'root-pictures')];
+  if (type === 'tabs') pc.browsers.google = { tabs: [{ url: 'hardware.oslab.local' }] };
+  if (type === 'browser-install') { pc.software.installedPrograms.firefox = { installed: true }; pc.software.openedPrograms.firefox = 'opened'; pc.software.downloads.firefox = { status: 'completed' }; }
   return pc;
 }
 
-test('catálogo contém dez clientes distintos e opções ramificadas válidas', () => {
-  assert.equal(tickets.length, 10); assert.equal(new Set(tickets.map((t) => t.avatar)).size, 10);
+test('catálogo contém quinze clientes distintos e opções ramificadas válidas', () => {
+  assert.equal(tickets.length, 15); assert.equal(new Set(tickets.map((t) => t.avatar)).size, 15);
   for (const t of tickets) { assert.ok(fs.existsSync(t.avatar)); assert.ok(t.seed && t.validation); for (const node of Object.values(t.conversation)) { assert.equal(node.options.length, 3); for (const o of node.options) assert.ok(t.conversation[o.next]); } }
   assert.notEqual(byId.lucas.conversation.start.options[0].next, byId.lucas.conversation.start.options[1].next);
 });
@@ -36,7 +41,7 @@ test('introdução não inicia relógio nem entrega chamados', () => {
 test('chegadas têm intervalos de 60–110 segundos e independem de resolver chamados', () => {
   const { engine: e } = setup(); assert.equal(Object.keys(e.state.tickets).length, 1);
   e.state.schedule.slice(1).forEach((s, i) => { const gap = s.at - e.state.schedule[i].at; assert.ok(gap >= 60000 && gap <= 110000); });
-  e.advance(e.state.schedule.at(-1).at); assert.equal(Object.keys(e.state.tickets).length, 10); assert.equal(e.state.tickets.lucas.status, 'service');
+  e.advance(e.state.schedule.at(-1).at); assert.equal(Object.keys(e.state.tickets).length, 15); assert.equal(e.state.tickets.lucas.status, 'service');
 });
 test('mensagens não lidas acumulam em outro cliente e zeram ao abrir', () => {
   const { engine: e } = setup(); e.advance(85000); assert.equal(e.state.tickets.mariana.unread, 1); e.open('mariana'); assert.equal(e.state.tickets.mariana.unread, 0); e.open('lucas'); e.advance(540000); assert.ok(e.state.tickets.mariana.unread > 0); e.open('mariana'); assert.equal(e.state.tickets.mariana.unread, 0);
@@ -66,7 +71,39 @@ test('correções são isoladas e o snapshot não compartilha referências', () 
 test('persistência restaura mensagens, cronograma, eventos e PCs sem repetir chegadas', () => {
   const { engine: e, store } = setup(); e.reply('lucas','symbol'); e.advance(1000); e.updatePc('lucas',pcFor('network')); const saved = e.snapshot(); const resumed = createShift({ storage: store, random: () => .5 }); assert.deepEqual(resumed.snapshot(), saved); resumed.advance(3000); assert.equal(resumed.state.tickets.lucas.node, 'symbol'); assert.equal(resumed.state.tickets.lucas.messages.length, 3); assert.equal(Object.keys(resumed.state.tickets).length, 1);
 });
-test('todas as dez regras aceitam os estados técnicos corretos', () => { for (const ticket of tickets) assert.ok(validatePc(ticket.validation, pcFor(ticket.validation)), ticket.id); });
+test('todas as quinze regras aceitam os estados técnicos corretos', () => { for (const ticket of tickets) assert.ok(validatePc(ticket.validation, pcFor(ticket.validation)), ticket.id); });
+test('internet aceita Ethernet funcional sem SSID, com Wi-Fi ligado ou desligado', () => {
+  const pc = pcFor('network'); pc.network = { connectionType: 'ethernet', ethernetCableConnected: true, wifiEnabled: false, connectedSsid: null, internetAvailable: true };
+  assert.ok(validatePc('network', pc)); pc.network.wifiEnabled = true; assert.ok(validatePc('network', pc));
+  pc.network.ethernetCableConnected = false; assert.equal(validatePc('network', pc), false); pc.network.ethernetCableConnected = true; pc.network.internetAvailable = false; assert.equal(validatePc('network', pc), false);
+});
+test('novos atendimentos exigem os arquivos originais, as abas certas e abrir o Firefox', () => {
+  const rename = pcFor('rename'); rename.files.items[0].name = 'Atividade de Informática'; assert.equal(validatePc('rename', rename), false);
+  const copy = pcFor('copy'); copy.files.items[0].parentId = 'root-desktop'; assert.equal(validatePc('copy', copy), false);
+  const picture = pcFor('pictures'); picture.files.items[0].id = 'copy'; assert.equal(validatePc('pictures', picture), false);
+  const tabs = pcFor('tabs'); tabs.browsers.google.tabs.push({ url: 'youtube.com' }); assert.equal(validatePc('tabs', tabs), false);
+  const firefox = pcFor('browser-install'); firefox.software.openedPrograms = {}; assert.equal(validatePc('browser-install', firefox), false);
+});
+test('cada perfil usa uma foto local com fotógrafo, origem e licença', () => {
+  assert.equal(new Set(tickets.map((t) => t.photo.source)).size, 15);
+  for (const ticket of tickets) { assert.match(ticket.avatar, /\.jpg$/); assert.ok(fs.statSync(ticket.avatar).size > 1000); assert.ok(ticket.photo.author); assert.match(ticket.photo.source, /^https:\/\/unsplash\.com\/photos\//); assert.equal(ticket.photo.license, 'https://unsplash.com/license'); }
+});
+test('migração preserva nove encerramentos, corrige Ethernet e agenda cinco chegadas uma vez', () => {
+  const { engine: e, store } = setup(); e.advance(e.state.schedule.at(-1).at);
+  const old = e.snapshot(); old.version = 1; old.schedule = old.schedule.slice(0, 10); old.events = old.events.filter((event) => byId[event.ticketId].order <= 10);
+  for (const ticket of tickets.slice(10)) delete old.tickets[ticket.id];
+  for (const ticket of tickets.slice(1, 10)) { old.tickets[ticket.id].status = 'resolved'; old.tickets[ticket.id].confirmed = true; }
+  old.tickets.lucas.pc = pcFor('network'); old.tickets.lucas.pc.network = { connectionType: 'ethernet', ethernetCableConnected: true, connectedSsid: null, internetAvailable: true }; old.tickets.lucas.solved = false;
+  store.setItem(STORAGE_KEY, JSON.stringify(old)); const resumed = createShift({ storage: store, random: () => .5 });
+  assert.equal(Object.values(resumed.state.tickets).filter((t) => t.status === 'resolved').length, 9); assert.ok(resumed.state.tickets.lucas.solved);
+  assert.deepEqual(resumed.state.schedule.slice(0, 10), old.schedule); assert.equal(resumed.state.schedule.length, 15); assert.deepEqual(resumed.state.tickets.lucas.pc, old.tickets.lucas.pc);
+  assert.deepEqual(createShift({ storage: store }).state.schedule, resumed.state.schedule); assert.equal(resumed.state.events.filter((event) => event.type === 'arrival').length, 5);
+});
+test('expediente antigo concluído reabre somente para os cinco novos chamados', () => {
+  const { engine: e, store } = setup(); e.advance(e.state.schedule.at(-1).at); const old = e.snapshot(); old.version = 1; old.phase = 'finished'; old.finishedAt = 'anterior'; old.schedule = old.schedule.slice(0, 10); old.events = [];
+  for (const ticket of tickets.slice(10)) delete old.tickets[ticket.id]; for (const ticket of Object.values(old.tickets)) ticket.status = 'resolved';
+  store.setItem(STORAGE_KEY, JSON.stringify(old)); const resumed = createShift({ storage: store, random: () => .5 }); assert.equal(resumed.state.phase, 'running'); assert.equal(resumed.state.finishedAt, null); assert.equal(resumed.state.schedule.length, 15); assert.equal(Object.values(resumed.state.tickets).filter((t) => t.status === 'resolved').length, 10);
+});
 test('ligar Wi-Fi sem conectar, instalar sem abrir e criar pasta no lugar errado não concluem', () => {
   const net = pcFor('network'); net.network.connectedSsid = null; assert.equal(validatePc('network', net), false);
   const install = pcFor('install'); install.software.openedPrograms = {}; assert.equal(validatePc('install', install), false);
@@ -86,10 +123,10 @@ test('cliente não confirma antes da correção e fechamento exige confirmação
 test('desfazer correção invalida confirmação, inclusive durante a resposta pendente', () => {
   const { engine: e } = setup(); e.updatePc('lucas',pcFor('network')); e.verify('lucas'); e.updatePc('lucas',null); e.advance(4000); assert.equal(e.state.tickets.lucas.confirmed,false); assert.ok(e.state.tickets.lucas.messages.at(-1).text.includes('continua')); assert.equal(e.close('lucas'),false);
 });
-test('expediente só termina após dez confirmações e encerramentos', () => {
-  const { engine: e } = setup(); e.advance(800000);
+test('expediente só termina após quinze confirmações e encerramentos', () => {
+  const { engine: e } = setup(); e.advance(e.state.schedule.at(-1).at);
   for (const ticket of tickets) { e.open(ticket.id); e.updatePc(ticket.id,pcFor(ticket.validation)); e.verify(ticket.id); e.advance(4000); assert.ok(e.close(ticket.id)); }
-  assert.equal(e.state.phase,'finished'); assert.equal(Object.values(e.state.tickets).filter((t) => t.status === 'resolved').length,10); const time=e.state.elapsedMs; e.advance(60000); assert.equal(e.state.elapsedMs,time);
+  assert.equal(e.state.phase,'finished'); assert.equal(Object.values(e.state.tickets).filter((t) => t.status === 'resolved').length,15); const time=e.state.elapsedMs; e.advance(60000); assert.equal(e.state.elapsedMs,time);
 });
 test('reiniciar limpa apenas o próprio expediente e cria novo identificador', () => {
   const { engine: e, store } = setup(); store.setItem('oslab-state-v1','original'); const old=e.state.id; e.reset(); assert.equal(e.state.phase,'intro'); assert.equal(store.getItem('oslab-state-v1'),'original'); assert.notEqual(e.state.id,old); assert.ok(store.getItem(STORAGE_KEY));

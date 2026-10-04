@@ -9,13 +9,23 @@ export function createShift({ storage = null, random = Math.random, saved = null
   const listeners = new Set();
   let serial = 0;
   let reading = null;
-  const fresh = () => ({ version: 1, id: `shift-${globalThis.crypto?.randomUUID?.() || `${Date.now()}-${++serial}-${Math.floor(random() * 1e6)}`}`, phase: 'intro', elapsedMs: 0, schedule: [], events: [], tickets: {}, selected: null, muted: false, startedAt: null, finishedAt: null });
+  const fresh = () => ({ version: 2, id: `shift-${globalThis.crypto?.randomUUID?.() || `${Date.now()}-${++serial}-${Math.floor(random() * 1e6)}`}`, phase: 'intro', elapsedMs: 0, schedule: [], events: [], tickets: {}, selected: null, muted: false, startedAt: null, finishedAt: null });
   let state = clone(saved || loadShift(storage)) || fresh();
   const delay = (low, high) => low + Math.floor(random() * (high - low + 1));
   function id(prefix) { return `${prefix}-${state.elapsedMs}-${++serial}-${Math.floor(random() * 1e6)}`; }
   function emit(type, detail = {}) { listeners.forEach((fn) => fn({ type, ...detail })); }
   function persist(type = 'changed') { const ok = saveShift(storage, state); emit(type, { persistence: ok }); }
   function queue(type, ticketId, after, data = {}) { state.events.push({ id: id('event'), type, ticketId, at: state.elapsedMs + after, data }); }
+  // Keep earlier PCs, replies and arrivals when a saved ten-ticket shift is upgraded.
+  const missing = state.phase === 'intro' ? [] : tickets.filter((ticket) => !state.tickets[ticket.id] && !state.schedule.some((entry) => entry.ticketId === ticket.id));
+  if (missing.length) {
+    let at = Math.max(state.elapsedMs, ...state.schedule.map((entry) => entry.at));
+    for (const ticket of missing) { at += delay(60000, 110000); state.schedule.push({ ticketId: ticket.id, at }); queue('arrival', ticket.id, at - state.elapsedMs); }
+    if (state.phase === 'finished') { state.phase = 'running'; state.finishedAt = null; }
+  }
+  state.version = 2;
+  for (const ticket of Object.values(state.tickets)) { ticket.solved = validatePc(byId[ticket.id]?.validation, ticket.pc); if (!ticket.solved && ticket.status !== 'resolved') ticket.confirmed = false; }
+  if (missing.length) saveShift(storage, state);
   function notify(ticketId, title, message, kind = 'message') { emit('notification', { ticketId, title, message, kind }); }
   function message(ticket, role, text, image = null) {
     ticket.messages.push({ id: id('message'), role, text, image, at: state.elapsedMs });
@@ -179,7 +189,7 @@ export function createShift({ storage = null, random = Math.random, saved = null
       ticket.remote.connected = false; state.events = state.events.filter((e) => e.ticketId !== ticketId);
       message(ticket, 'technician', 'Chamado resolvido. Obrigado pelo contato e bom trabalho!');
       notify(ticketId, 'Chamado resolvido', `Atendimento de ${byId[ticketId].name} concluído.`, 'resolved');
-      if (Object.values(state.tickets).filter((t) => t.status === 'resolved').length === 10) { state.phase = 'finished'; state.finishedAt = new Date().toISOString(); }
+      if (Object.values(state.tickets).filter((t) => t.status === 'resolved').length === tickets.length) { state.phase = 'finished'; state.finishedAt = new Date().toISOString(); }
       persist('closed'); return true;
     },
     mute() { state.muted = !state.muted; persist('mute'); },

@@ -1,4 +1,6 @@
 // Dialogues describe clues. Technical rules live separately in validators.mjs.
+import { additionalTickets } from './tickets-extra.mjs';
+import { portraits } from './portraits.mjs';
 function conversation(message, branches) {
   const basic = branches.map((b) => ({ id: b.id, label: b.question, next: b.id }));
   const nodes = { start: { message, options: basic } };
@@ -126,7 +128,8 @@ export const tickets = [
       { id: 'cleanup', question: 'Você já tentou liberar espaço?', answer: 'Apaguei uma coisa, mas não parece ter liberado muito.', followup: 'Você esvaziou a Lixeira depois disso?', detail: 'Não. Não sabia que os arquivos continuam ocupando espaço lá.' },
     ]),
   },
+  ...additionalTickets(conversation),
 ];
 
-tickets.forEach((ticket, index) => { ticket.order = index + 1; ticket.avatar = `assets/avatars/${ticket.id}.svg`; });
+tickets.forEach((ticket, index) => { ticket.order = index + 1; ticket.avatar = portraits[ticket.id].path; ticket.photo = portraits[ticket.id]; });
 export const byId = Object.fromEntries(tickets.map((ticket) => [ticket.id, ticket]));

@@ -7,7 +7,11 @@ export function validatePc(type, pc) {
   const items = pc.files?.items || [];
   const app = pc.software?.installedPrograms?.appjavafx;
   switch (type) {
-    case 'network': return Boolean(pc.network?.wifiEnabled && pc.network?.connectedSsid && pc.network?.internetAvailable);
+    case 'network': {
+      const network = pc.network;
+      const connected = network?.connectionType === 'ethernet' ? network.ethernetCableConnected : network?.wifiEnabled && !network?.airplaneMode && network?.connectedSsid;
+      return Boolean(connected && network.internetAvailable);
+    }
     case 'install': return Boolean(app?.installed && pc.software.openedPrograms?.appjavafx && pc.software.downloads?.appjavafx?.status === 'completed');
     case 'uninstall': return Boolean(app && !app.installed && !app.desktopShortcut && !app.startMenuShortcut);
     case 'folder': return Boolean(named(items, 'root-documents', 'Documentos da Escola', 'folder'));
@@ -19,6 +23,14 @@ export function validatePc(type, pc) {
       return Boolean(target && items.some((i) => present(i) && i.parentId === 'root-desktop' && i.shortcutTargetId === target.id));
     }
     case 'restore': return Boolean(items.some((i) => i.id === 'bruno-report' && present(i) && i.parentId === 'root-documents'));
+    case 'rename': return Boolean(items.some((i) => i.id === 'tiago-task' && present(i) && i.parentId === 'root-documents' && i.name === 'Atividade de Informática.docx'));
+    case 'copy': {
+      const original = items.find((i) => i.id === 'beatriz-notice' && present(i) && i.parentId === 'root-documents');
+      return Boolean(original && items.some((i) => present(i) && i.parentId === 'root-desktop' && i.sourceId === original.id && i.name === 'Comunicado.pdf'));
+    }
+    case 'pictures': return Boolean(items.some((i) => i.id === 'diego-photo' && present(i) && i.parentId === 'root-pictures'));
+    case 'tabs': return Boolean(Object.values(pc.browsers || {}).some((browser) => browser?.tabs?.some((tab) => tab.url === 'hardware.oslab.local') && !browser.tabs.some((tab) => tab.url === 'youtube.com')));
+    case 'browser-install': return Boolean(pc.software?.installedPrograms?.firefox?.installed && pc.software.openedPrograms?.firefox && pc.software.downloads?.firefox?.status === 'completed');
     case 'storage': {
       // Trashed files still occupy space, just as they do in OSLab.
       const used = items.reduce((total, i) => total + (i.kind === 'folder' ? 0 : Number(i.sizeBytes || 1024)), 0);
